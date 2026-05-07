@@ -13,4 +13,4 @@ class RentalContractSerializer(serializers.ModelSerializer):
     class Meta:
         model = RentalContract
         fields = '__all__'
-        read_only_fields = ('id', 'created_at', 'blockchain_contract_address', 'blockchain_tx_hash')
+        read_only_fields = ('id', 'created_at', 'blockchain_tx_hash')

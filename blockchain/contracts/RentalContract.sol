@@ -29,6 +29,12 @@ contract RentalContract {
         emit ContractSigned(landlord, tenant);
     }
     
+    function payRent() external payable {
+        require(isActive, "Contract is not active");
+        require(msg.value == monthlyRent, "Must send exact rent amount");
+        payable(landlord).transfer(msg.value);
+    }
+    
     function getBalance() external view returns (uint256) {
         return address(this).balance;
     }

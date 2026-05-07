@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'properties',
     'contracts',
     'users',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

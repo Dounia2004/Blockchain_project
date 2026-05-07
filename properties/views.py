@@ -4,7 +4,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .models import Property, RentalContract
 from .serializers import PropertySerializer, RentalContractSerializer
-from contracts.blockchain import BlockchainService
+from contracts.blockchain_service import BlockchainService
+from django.utils import timezone
 
 class PropertyViewSet(viewsets.ModelViewSet):
     queryset = Property.objects.all()
@@ -30,7 +31,7 @@ class PropertyViewSet(viewsets.ModelViewSet):
         # Déployer le contrat
         try:
             result = blockchain.deploy_contract(
-                landlord_address=request.user.eth_address,  # À ajouter au modèle User
+                landlord_address=request.user.userprofile.eth_address,
                 tenant_address=request.data.get('tenant_address'),
                 monthly_rent=float(property_obj.price_per_month),
                 deposit=float(property_obj.security_deposit),
@@ -65,7 +66,7 @@ class RentalContractViewSet(viewsets.ModelViewSet):
         try:
             tx_hash = blockchain.sign_contract(
                 contract_address=contract.blockchain_contract_address,
-                tenant_private_key=request.user.eth_private_key,  # Stockez de façon sécurisée !
+                tenant_private_key=request.user.userprofile.eth_private_key,
                 deposit_amount=float(contract.security_deposit)
             )
             
@@ -91,7 +92,7 @@ class RentalContractViewSet(viewsets.ModelViewSet):
         try:
             tx_hash = blockchain.pay_rent(
                 contract_address=contract.blockchain_contract_address,
-                tenant_private_key=request.user.eth_private_key,
+                tenant_private_key=request.user.userprofile.eth_private_key,
                 rent_amount=float(contract.monthly_rent)
             )
             
